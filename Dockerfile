@@ -33,7 +33,8 @@ RUN apt-get update -y && apt-get install -y \
     libhdf4-alt-dev \
     libhdf5-serial-dev \
     bash-completion \
-    cmake
+    cmake \
+    libcudnn7
 
 # Compile and install OpenJPEG
 RUN cd src && tar -xvf openjpeg-${OPENJPEG_VERSION}.tar.gz && cd openjpeg-${OPENJPEG_VERSION}/ \
