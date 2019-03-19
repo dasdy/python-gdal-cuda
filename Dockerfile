@@ -1,4 +1,4 @@
-FROM nvidia/cuda:10.0-runtime-ubuntu18.04
+FROM nvidia/cuda:10.0-cudnn7-devel
 LABEL maintainer="dasdeg@gmail.com"
 
 # get GDAL with tiff support
@@ -33,8 +33,7 @@ RUN apt-get update -y && apt-get install -y \
     libhdf4-alt-dev \
     libhdf5-serial-dev \
     bash-completion \
-    cmake \
-    libcudnn7
+    cmake 
 
 # Compile and install OpenJPEG
 RUN cd src && tar -xvf openjpeg-${OPENJPEG_VERSION}.tar.gz && cd openjpeg-${OPENJPEG_VERSION}/ \
