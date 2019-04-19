@@ -3,7 +3,7 @@ LABEL maintainer="dasdeg@gmail.com"
 
 # get GDAL with tiff support
 ENV ROOTDIR /usr/local/
-ARG GDAL_VERSION=2.4.0
+ARG GDAL_VERSION=2.4.1
 ARG OPENJPEG_VERSION=2.3.0
 
 # Load assets
