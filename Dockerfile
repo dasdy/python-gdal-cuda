@@ -1,24 +1,24 @@
-FROM nvidia/cuda:10.0-cudnn7-devel
+FROM nvidia/cuda:10.1-cudnn7-devel
 LABEL maintainer="dasdeg@gmail.com"
 
 # get GDAL with tiff support
 ENV ROOTDIR /usr/local/
-ARG GDAL_VERSION=2.4.1
+ARG GDAL_VERSION=2.4.2
 ARG OPENJPEG_VERSION=2.3.0
 
 # Load assets
 WORKDIR $ROOTDIR/
 
-ADD http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz $ROOTDIR/src/
-ADD https://github.com/uclouvain/openjpeg/archive/v${OPENJPEG_VERSION}.tar.gz $ROOTDIR/src/openjpeg-${OPENJPEG_VERSION}.tar.gz
+ARG DEBIAN_FRONTEND=noninteractive
 
 # Install basic dependencies
 RUN apt-get update -y && apt-get install -y \
     software-properties-common \
-    python3-software-properties \
     build-essential \
-    python3-dev \
-    python3-numpy \
+    python3.7 \
+    python3-pip \
+    python3-opencv \
+    python3.7-dev \
     libspatialite-dev \
     sqlite3 \
     libpq-dev \
@@ -35,6 +35,11 @@ RUN apt-get update -y && apt-get install -y \
     bash-completion \
     cmake 
 
+RUN python3.7 -mpip install numpy scipy matplotlib scikit-learn opencv-python
+
+ADD http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz $ROOTDIR/src/
+ADD https://github.com/uclouvain/openjpeg/archive/v${OPENJPEG_VERSION}.tar.gz $ROOTDIR/src/openjpeg-${OPENJPEG_VERSION}.tar.gz
+
 # Compile and install OpenJPEG
 RUN cd src && tar -xvf openjpeg-${OPENJPEG_VERSION}.tar.gz && cd openjpeg-${OPENJPEG_VERSION}/ \
     && mkdir build && cd build \
@@ -44,7 +49,7 @@ RUN cd src && tar -xvf openjpeg-${OPENJPEG_VERSION}.tar.gz && cd openjpeg-${OPEN
 
 # Compile and install GDAL
 RUN cd src && tar -xvf gdal-${GDAL_VERSION}.tar.gz && cd gdal-${GDAL_VERSION} \
-    && ./configure --with-python --with-spatialite --with-pg --with-cryptopp --with-curl --with-openjpeg=$ROOTDIR \
+    && ./configure --with-python=python3 --with-spatialite --with-pg --with-cryptopp --with-curl --with-openjpeg=$ROOTDIR --with-proj=/usr/local \
     && make && make install && ldconfig \
     && apt-get update -y \
     && apt-get remove -y --purge build-essential \
