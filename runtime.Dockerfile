@@ -1,4 +1,4 @@
-FROM nvidia/cuda:10.1-cudnn7-devel
+FROM nvidia/cuda:10.0-cudnn7-runtime
 LABEL maintainer="dasdeg@gmail.com"
 
 # get GDAL with tiff support
@@ -15,10 +15,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y && apt-get install -y \
     software-properties-common \
     build-essential \
-    python3.7 \
     python3-pip \
-    python3-opencv \
-    python3.7-dev \
     libspatialite-dev \
     sqlite3 \
     libpq-dev \
@@ -33,9 +30,7 @@ RUN apt-get update -y && apt-get install -y \
     libhdf4-alt-dev \
     libhdf5-serial-dev \
     bash-completion \
-    cmake 
-
-RUN python3.7 -mpip install numpy scipy matplotlib scikit-learn opencv-python
+    cmake
 
 ADD http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz $ROOTDIR/src/
 ADD https://github.com/uclouvain/openjpeg/archive/v${OPENJPEG_VERSION}.tar.gz $ROOTDIR/src/openjpeg-${OPENJPEG_VERSION}.tar.gz
