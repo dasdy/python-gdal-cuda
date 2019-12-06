@@ -16,6 +16,7 @@ RUN apt-get update -y && apt-get install -y \
     software-properties-common \
     build-essential \
     python3-pip \
+    python3-numpy \
     libspatialite-dev \
     sqlite3 \
     libpq-dev \
