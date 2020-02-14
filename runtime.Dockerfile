@@ -1,4 +1,4 @@
-FROM nvidia/cuda:10.0-cudnn7-runtime
+FROM nvidia/cuda:10.2-cudnn7-devel
 LABEL maintainer="dasdeg@gmail.com"
 
 # get GDAL with tiff support
