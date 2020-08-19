@@ -16,7 +16,7 @@ RUN apt-get update -y && apt-get install -y \
     software-properties-common \
     build-essential \
     python3-pip \
-    python3-numpy \
+    python3.7-dev \
     libspatialite-dev \
     sqlite3 \
     libpq-dev \
@@ -25,13 +25,17 @@ RUN apt-get update -y && apt-get install -y \
     libproj-dev \
     libxml2-dev \
     libgeos-dev \
+    liblzma-dev \
+    libzstd-dev \
     libnetcdf-dev \
     libpoppler-dev \
     libspatialite-dev \
     libhdf4-alt-dev \
     libhdf5-serial-dev \
     bash-completion \
-    cmake
+    cmake && \
+    python3.7 -mpip install -U numpy pip && \
+    rm -rf /var/lib/apt/lists/*
 
 ADD http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz $ROOTDIR/src/
 ADD https://github.com/uclouvain/openjpeg/archive/v${OPENJPEG_VERSION}.tar.gz $ROOTDIR/src/openjpeg-${OPENJPEG_VERSION}.tar.gz
@@ -45,11 +49,14 @@ RUN cd src && tar -xvf openjpeg-${OPENJPEG_VERSION}.tar.gz && cd openjpeg-${OPEN
 
 # Compile and install GDAL
 RUN cd src && tar -xvf gdal-${GDAL_VERSION}.tar.gz && cd gdal-${GDAL_VERSION} \
-    && ./configure --with-python=python3 --with-spatialite --with-pg --with-cryptopp --with-curl --with-openjpeg=$ROOTDIR --with-proj=/usr/local \
+    && ./configure --with-python=python3.7 --with-spatialite --with-pg --with-cryptopp --with-curl --with-zstd --with-liblzma --with-openjpeg=$ROOTDIR --with-proj=/usr/local \
     && make && make install && ldconfig \
     && apt-get update -y \
     && apt-get remove -y --purge build-essential \
     && cd $ROOTDIR && cd src/gdal-${GDAL_VERSION}/swig/python \
-    && python3 setup.py build \
-    && python3 setup.py install \
+    && python3.7 setup.py build \
+    && python3.7 setup.py install \
     && cd $ROOTDIR && rm -Rf src/gdal*
+
+
+RUN rm /usr/bin/python3 && ln -s /usr/bin/python3.7 /usr/bin/python3 && ln -s /usr/bin/python3.7 /usr/bin/python
